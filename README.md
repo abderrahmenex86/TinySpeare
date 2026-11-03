@@ -1,98 +1,49 @@
 # nanogpt
 
-<div align="center">
-  <p>
-    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
-    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-    <img src="https://img.shields.io/badge/Tqdm-40B281?style=for-the-badge&logo=tqdm&logoColor=white" alt="tqdm" />
-  </p>
-</div>
+A character-level decoder-only Transformer written from scratch in PyTorch,
+following Andrej Karpathy's nanoGPT series. Six blocks, four attention heads,
+and a 32-dimensional embedding: small enough to train on a laptop, complete
+enough to generate Shakespeare-shaped text.
 
-nanogpt is a clean, character-level decoder-only Transformer language model built in PyTorch. Inspired by Andrej Karpathy's educational deep learning series, this repository provides a highly accessible, modular implementation of a GPT-style network from scratch, complete with custom attention heads, residual blocks, and text generation logic.
+## What it does
 
-## Features
+- Implements multi-head causal self-attention by hand, including the masked
+  attention weights that keep the model autoregressive.
+- Stacks six residual blocks over the embedding, with layer norm and dropout at
+  0.4.
+- Trains on any plain text file, splitting into train and validation, optimising
+  with AdamW, and printing evaluation loss on both splits as it goes.
+- Serialises the character vocabulary to `meta.pkl` and the weights to
+  `model.pth`, then samples new text from a blank prompt.
 
-- **Decoder-Only Transformer**: Structured architecture utilizing 6 sequential block layers with a residual connection design.
-- **Custom Attention Layers**: Implements Multi-Head Self-Attention using masked causal attention weights to enforce autoregressive token prediction.
-- **Dynamic Training Pipeline**: Splits data dynamically, optimizes parameters using an AdamW optimizer, and schedules updates to print periodic evaluation metrics across training and validation splits.
-- **Configurable Architecture**: Uses a clear `GPTConfig` dataclass configuration mapping dimensions ($N_{\text{embed}} = 32$, $N_{\text{head}} = 4$, dropout $= 0.4$).
-- **Generative Decoding**: Features an autoregressive sampling helper (`.generate()`) with temperature-free Multinomial probability sampling to synthesize continuous character sequences.
+## Run it
 
-## Tech Stack
+```bash
+git clone https://github.com/abderrahmenex86/nanogpt
+cd nanogpt
+pip install -r requirements.txt
 
-- **Deep Learning Framework:** PyTorch (torch.nn, torch.nn.functional)
-- **Serialization:** Pickle (for vocabulary-to-index metadata)
-- **Utilities:** Tqdm
+# put a text file named input.txt in the repo root
+python train.py       # 100,000 iterations by default
+python generate.py    # samples 500 characters
+```
 
-## Project Structure
+A CUDA GPU helps but is not required; the code falls back to CPU.
+
+## Sample output
+
+After 10,000 iterations on the Tiny Shakespeare corpus:
 
 ```text
-├── config.py               # Hyperparameter configurations and device configurations
-├── model.py                # Core modules (Head, MultiHeadAttention, Block, FeedForward, BigramLanguageModel)
-├── train.py                # Training loop, dynamic batching, and evaluation logic
-├── generate.py             # Inference script loading weights to generate raw text
-├── requirements.txt
-└── README.md
-```
-
-## Getting Started
-
-### Prerequisites
-- Python (v3.10+)
-- CUDA-compatible GPU (recommended for acceleration, falls back to CPU automatically)
-
-### Installation
-
-1. **Clone the repository:**
-```bash
-git clone https://github.com/abderrahmenex86/nanogpt.git
-cd nanogpt
-```
-
-2. **Install dependencies:**
-```bash
-pip install -r requirements.txt
-```
-
-### How to Use It
-
-1. **Prepare your Training Dataset:**
-Place a raw text file named `input.txt` in the root of the repository (e.g., the Tiny Shakespeare dataset or any other text file).
-
-2. **Train the Transformer:**
-Run the training script to process characters, serialize mappings into `meta.pkl`, and output checkpoints:
-```bash
-python train.py
-```
-This loop runs for 100,000 iterations (by default configuration), displaying progress bars and saving trained weights to `model.pth`.
-
-3. **Generate Text:**
-Use the generator to load model parameters and sample 500 characters starting from a blank context:
-```bash
-python generate.py
-```
-
-### Example output
-*This is an example output after 10000 iterations*
-```Text
-Hold not yours.
-
-CATINGS:
-I'll you to doth clove and the tall not: lappisiadection!
-Now me thee
-Them.
-
 LEONTES:
 A lown hought of Richild:
 I dish the pall hearful Colouse show,
 But stanceford the must coss fair combitith: have ron, time of proud'd forth a mey;
-To should.
-
-Munchwhat Make of my spaitine our him, this
-chate. That so grow: to death repeops is; able us a reade my risirst and be evils,
-Clised.
-Or jest'd;
-Thy then:
-Take weak yies was Corn sir?
-Which toulman: by of suple. I bane? Duked n
 ```
+
+The words are invented and the grammar is inconsistent. That is what a 32-dim
+embedding and 10k iterations buy you.
+
+## Stack
+
+Python 3.10+ · PyTorch · tqdm · pickle for the vocabulary
