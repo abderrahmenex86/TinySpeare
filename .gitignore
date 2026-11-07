@@ -11,8 +11,12 @@ setup.py
 setup.sh
 *.pt
 *.txt
+!input.txt
+!requirements.txt
 *.ipynb
 *.pkl
+!meta.pkl
+!model.pth
 
 node_modules/
 
