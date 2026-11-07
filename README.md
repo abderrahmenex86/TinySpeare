@@ -1,9 +1,9 @@
-# nanogpt
+# TinySpeare
 
-I built this character-level Transformer from scratch in PyTorch as a portfolio
-piece, working through Andrej Karpathy's nanoGPT series. The model has 80,193
-parameters: a 32-dimensional embedding, four attention heads, six pre-norm
-residual blocks, and an 8-character context window. `train.py` learns a
+TinySpeare is a character-level Transformer I built from scratch in PyTorch as a
+portfolio piece, working through Andrej Karpathy's nanoGPT series. The model has
+80,193 parameters: a 32-dimensional embedding, four attention heads, six
+pre-norm residual blocks, and an 8-character context window. `train.py` learns a
 character vocabulary from any UTF-8 text file, trains with AdamW, and writes
 `meta.pkl` and `model.pth`. `generate.py` loads that checkpoint and samples 500
 new characters from an empty prompt. The published checkpoint was trained on the
@@ -94,8 +94,8 @@ Read `model.py` from top to bottom; each class is used by a class below it.
 ## Run it
 
 ```bash
-git clone https://github.com/abderrahmenex86/nanogpt
-cd nanogpt
+git clone https://github.com/abderrahmenex86/tinyspeare
+cd tinyspeare
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install -r requirements.txt
